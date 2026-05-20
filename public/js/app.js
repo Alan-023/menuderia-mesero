@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-const API = document.querySelector('meta[name="api-url"]')?.getAttribute('content') || 'http://127.0.0.1:8000/api';
+const API = document.querySelector('meta[name="api-url"]')?.getAttribute('content') || 'https://menuderia-backend.onrender.com/api';
 const IMG_MAP = {
     1:'menudo_grande.jpeg',2:'menudo_chico.jpg',3:'cafe_olla.jpg',4:'cocuela.webp',
     5:'jericalla.png',11:'menudo_mediano.jpeg',12:'quesadillas.jpg',13:'taco_frijol.jpg',
