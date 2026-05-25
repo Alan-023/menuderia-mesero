@@ -559,27 +559,21 @@ function renderSessionsSidebar() {
         // Close session bound
         const closeBtn = card.querySelector('.close-session-btn');
         if(closeBtn) {
-            closeBtn.addEventListener('click', async (e) => {
+            closeBtn.addEventListener('click', (e) => {
                 e.stopPropagation(); // don't toggle expansion
-                try {
-                    const API = window.appState.API;
-                    const token = window.appState.token();
-                    const btn = e.target;
-                    btn.innerHTML = '...'; btn.disabled = true;
-                    const r = await fetch(`${API}/mesero/sesiones/${s.session_id}/cerrar`, {
-                        method: 'PUT',
-                        headers: { Authorization:`Bearer ${token}`, Accept:'application/json' }
-                    });
-                    if(r.ok) {
-                        window.showToast('Sesión cerrada correctamente.', 'success');
-                        window.loadSessions();
-                    } else {
-                        window.showToast('Error al cerrar la sesión.', 'error');
-                        btn.innerHTML = 'Cerrar'; btn.disabled = false;
-                    }
-                } catch(err) {
-                    window.showToast('Error de conexión.', 'error');
+                window.sessionToClose = s.session_id;
+                
+                document.getElementById('confirm-close-session-name').textContent = s.titular_name;
+                const modal = document.getElementById('confirm-close-session-modal');
+                modal.classList.remove('hidden');
+                
+                const confirmBtn = document.getElementById('confirm-close-session-btn');
+                if(confirmBtn) {
+                    confirmBtn.innerHTML = 'Sí, Cerrar';
+                    confirmBtn.disabled = false;
                 }
+                
+                gsap.from('#confirm-close-session-modal .modal-content', { scale:0.85, opacity:0, duration:0.3, ease:'power2.out' });
             });
         }
         
@@ -949,6 +943,46 @@ document.getElementById('ticket-download-pdf').addEventListener('click', () => {
     
     const safeName = currentTicketData.session.titular_name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
     doc.save(`ticket_${safeName}_${currentTicketData.session.session_id}.pdf`);
+});
+
+// MODAL CERRAR SESION
+window.sessionToClose = null;
+
+document.querySelectorAll('.cancel-close-session-btn, #confirm-close-session-modal .modal-backdrop').forEach(b => {
+    b.addEventListener('click', () => {
+        gsap.to('#confirm-close-session-modal .modal-content', { scale:0.9, opacity:0, duration:0.2, onComplete:()=>{
+            document.getElementById('confirm-close-session-modal').classList.add('hidden');
+            gsap.set('#confirm-close-session-modal .modal-content', {clearProps:'all'});
+        }});
+    });
+});
+
+document.getElementById('confirm-close-session-btn')?.addEventListener('click', async () => {
+    if(!window.sessionToClose) return;
+    const API = window.appState.API;
+    const token = window.appState.token();
+    
+    const btn = document.getElementById('confirm-close-session-btn');
+    const orig = btn.innerHTML;
+    btn.innerHTML = 'Cerrando...'; btn.disabled = true;
+    
+    try {
+        const r = await fetch(`${API}/mesero/sesiones/${window.sessionToClose}/cerrar`, {
+            method: 'PUT',
+            headers: { Authorization:`Bearer ${token}`, Accept:'application/json' }
+        });
+        if(r.ok) {
+            window.showToast('Sesión cerrada correctamente.', 'success');
+            document.querySelector('.cancel-close-session-btn').click(); // close modal
+            window.loadSessions();
+        } else {
+            window.showToast('Error al cerrar la sesión.', 'error');
+            btn.innerHTML = orig; btn.disabled = false;
+        }
+    } catch(err) {
+        window.showToast('Error de conexión.', 'error');
+        btn.innerHTML = orig; btn.disabled = false;
+    }
 });
 
 window.showToast = function(msg, type='success') {

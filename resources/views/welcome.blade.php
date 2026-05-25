@@ -181,6 +181,25 @@
             </div>
         </div>
 
+        <!-- MODAL CONFIRMACION CERRAR SESION -->
+        <div id="confirm-close-session-modal" class="modal hidden">
+            <div class="modal-backdrop"></div>
+            <div class="modal-content glass-card" style="max-width: 400px; text-align: center;">
+                <button class="cancel-close-session-btn" style="position:absolute;top:1rem;right:1rem;background:rgba(0,0,0,0.3);border:none;color:white;width:32px;height:32px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.2rem;transition:background 0.3s;z-index:10;">✕</button>
+                <div class="modal-body text-center">
+                    <div style="width:80px;height:80px;border-radius:50%;background:var(--danger);color:white;display:flex;align-items:center;justify-content:center;font-size:2.5rem;margin:0 auto 1.5rem auto;font-weight:bold;box-shadow:0 4px 15px rgba(239,68,68,0.4);">
+                        <span>!</span>
+                    </div>
+                    <h2 style="margin-bottom:0.5rem;font-size:1.5rem;color:var(--text-primary);">¿Cerrar Sesión?</h2>
+                    <p style="color:var(--text-secondary);margin-bottom:1rem;">Estás a punto de cerrar la sesión de <strong id="confirm-close-session-name" style="color:var(--text-primary);"></strong>.</p>
+                    <div style="margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid var(--glass-border); display: flex; gap: 1rem; justify-content: center;">
+                        <button class="btn-secondary cancel-close-session-btn" style="flex: 1;">Cancelar</button>
+                        <button id="confirm-close-session-btn" class="btn-danger" style="flex: 1;">Sí, Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- MODAL DE TICKET -->
         <div id="ticket-modal" class="modal hidden">
             <div class="modal-backdrop"></div>
